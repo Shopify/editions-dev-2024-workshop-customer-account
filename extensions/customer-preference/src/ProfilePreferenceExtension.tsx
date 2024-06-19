@@ -2,13 +2,16 @@ import {
   BlockStack,
   Button,
   Card,
+  Form,
   Heading,
   Icon,
   InlineStack,
   Modal,
   reactExtension,
+  Select,
   Text,
 } from "@shopify/ui-extensions-react/customer-account";
+import { useState } from "react";
 
 export default reactExtension(
   "customer-account.profile.block.render",
@@ -28,6 +31,14 @@ interface Props {
 }
 
 function ProfilePreferenceExtension(props: Props) {
+  const [clothingCategory, setClothingCategory] = useState(
+    props.clothingCategory ?? "",
+  );
+
+  const handleSubmit = () => {
+    console.log(clothingCategory);
+  };
+
   return (
     <Card padding>
       <BlockStack spacing="loose">
@@ -38,7 +49,36 @@ function ProfilePreferenceExtension(props: Props) {
               kind="plain"
               overlay={
                 <Modal padding title="Edit preferences">
-                  Hello
+                  <Form onSubmit={handleSubmit}>
+                    <BlockStack>
+                      <Select
+                        label="Clothing category"
+                        options={[
+                          {
+                            label: "",
+                            value: "",
+                          },
+                          {
+                            label: "Kids",
+                            value: "kids",
+                          },
+                          {
+                            label: "Men",
+                            value: "men",
+                          },
+                          {
+                            label: "Women",
+                            value: "women",
+                          },
+                        ]}
+                        value={clothingCategory}
+                        onChange={(value) => setClothingCategory(value)}
+                      />
+                      <InlineStack inlineAlignment="end">
+                        <Button accessibilityRole="submit">Save</Button>
+                      </InlineStack>
+                    </BlockStack>
+                  </Form>
                 </Modal>
               }
             >
@@ -48,11 +88,24 @@ function ProfilePreferenceExtension(props: Props) {
         </Heading>
         <BlockStack spacing="none">
           <Text appearance="subdued">Clothing category</Text>
-          <Text>{props.clothingCategory}</Text>
+          <Text>{translateClothingCategory(clothingCategory)}</Text>
         </BlockStack>
       </BlockStack>
     </Card>
   );
+}
+
+function translateClothingCategory(value?: string) {
+  switch (value) {
+    case "":
+      return "";
+    case "kids":
+      return "Kids";
+    case "men":
+      return "Men";
+    case "women":
+      return "Women";
+  }
 }
 
 async function getCustomerPreferences() {
