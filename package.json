@@ -1,5 +1,5 @@
 {
-  "name": "lucrative-tax-app",
+  "name": "editions-dev-workshop",
   "private": true,
   "scripts": {
     "build": "remix vite:build",
