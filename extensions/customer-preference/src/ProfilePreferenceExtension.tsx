@@ -1,4 +1,7 @@
 import {
+  BlockStack,
+  Card,
+  Heading,
   reactExtension,
   Text,
 } from "@shopify/ui-extensions-react/customer-account";
@@ -8,5 +11,15 @@ export default reactExtension("customer-account.profile.block.render", () => (
 ));
 
 function ProfilePreferenceExtension() {
-  return <Text>Hello world</Text>;
+  return (
+    <Card padding>
+      <BlockStack spacing="loose">
+        <Heading level={3}>Preferences</Heading>
+        <BlockStack spacing="none">
+          <Text appearance="subdued">Clothing Category</Text>
+          <Text>TODO</Text>
+        </BlockStack>
+      </BlockStack>
+    </Card>
+  );
 }
