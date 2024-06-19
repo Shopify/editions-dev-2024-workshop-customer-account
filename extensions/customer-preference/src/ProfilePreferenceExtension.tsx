@@ -1,7 +1,11 @@
 import {
   BlockStack,
+  Button,
   Card,
   Heading,
+  Icon,
+  InlineStack,
+  Modal,
   reactExtension,
   Text,
 } from "@shopify/ui-extensions-react/customer-account";
@@ -10,8 +14,6 @@ export default reactExtension(
   "customer-account.profile.block.render",
   async () => {
     const customerPreferences = await getCustomerPreferences();
-
-    console.log(customerPreferences);
 
     return (
       <ProfilePreferenceExtension
@@ -29,7 +31,21 @@ function ProfilePreferenceExtension(props: Props) {
   return (
     <Card padding>
       <BlockStack spacing="loose">
-        <Heading level={3}>Preferences</Heading>
+        <Heading level={3}>
+          <InlineStack>
+            <Text>Preferences</Text>
+            <Button
+              kind="plain"
+              overlay={
+                <Modal padding title="Edit preferences">
+                  Hello
+                </Modal>
+              }
+            >
+              <Icon source="pen" size="small" appearance="monochrome" />
+            </Button>
+          </InlineStack>
+        </Heading>
         <BlockStack spacing="none">
           <Text appearance="subdued">Clothing category</Text>
           <Text>{props.clothingCategory}</Text>
