@@ -10,6 +10,7 @@ import {
   reactExtension,
   Select,
   Text,
+  useApi,
 } from "@shopify/ui-extensions-react/customer-account";
 import { useState } from "react";
 
@@ -20,6 +21,7 @@ export default reactExtension(
 
     return (
       <ProfilePreferenceExtension
+        customerId={customerPreferences.customerId}
         clothingCategory={customerPreferences.clothingCategory}
       />
     );
@@ -27,16 +29,19 @@ export default reactExtension(
 );
 
 interface Props {
+  customerId: string;
   clothingCategory?: string;
 }
 
 function ProfilePreferenceExtension(props: Props) {
+  const { ui } = useApi();
   const [clothingCategory, setClothingCategory] = useState(
     props.clothingCategory ?? "",
   );
 
-  const handleSubmit = () => {
-    console.log(clothingCategory);
+  const handleSubmit = async () => {
+    await setCustomerPreferences(props.customerId, clothingCategory);
+    ui.overlay.close("preferences-card");
   };
 
   return (
@@ -48,7 +53,7 @@ function ProfilePreferenceExtension(props: Props) {
             <Button
               kind="plain"
               overlay={
-                <Modal padding title="Edit preferences">
+                <Modal padding title="Edit preferences" id="preferences-card">
                   <Form onSubmit={handleSubmit}>
                     <BlockStack>
                       <Select
@@ -119,6 +124,7 @@ async function getCustomerPreferences() {
       body: JSON.stringify({
         query: `query preferences($namespace: String!, $key: String!) {
           customer {
+            id
             metafield(namespace: $namespace, key: $key) {
               value
             }
@@ -135,6 +141,40 @@ async function getCustomerPreferences() {
   const { data } = await response.json();
 
   return {
+    customerId: data.customer.id,
     clothingCategory: data.customer.metafield?.value,
   };
+}
+
+async function setCustomerPreferences(
+  customerId: string,
+  clothingCategory?: string,
+) {
+  await fetch("shopify:customer-account/api/2024-07/graphql.json", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation setPreferences($metafields: [MetafieldsSetInput!]!) {
+          metafieldsSet(metafields: $metafields) {
+            userErrors {
+              field
+              message
+            }
+          }
+        }`,
+      variables: {
+        metafields: [
+          {
+            key: "clothing-category",
+            namespace: "$app:preferences",
+            ownerId: customerId,
+            type: "single_line_text_field",
+            value: clothingCategory ?? "",
+          },
+        ],
+      },
+    }),
+  });
 }
