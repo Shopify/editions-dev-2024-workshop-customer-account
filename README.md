@@ -1,5 +1,7 @@
 # Editions.dev 2024 customer account workshop
 
+[Workshop walkthrough](https://shopify.dev/workshops/customer)
+
 This is a blank Shopify app and customer account UI extension generated through the Shopify CLI. It's using Remix, TypeScript, and React.
 
 Rather than cloning this repo, you can use the Shopify CLI to generate the equivalent with these steps:
