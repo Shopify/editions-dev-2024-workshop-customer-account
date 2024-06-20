@@ -61,7 +61,7 @@ If you receive this error after changing to one of the provided branch:
 ...you can most likely fix it by running the partners connection process again. This will ask you which account to use, whether to create a new app or re-use an existing one, etc.
 
 ```bash
-npm run dev -- --reset
+npm run shopify app config link --reset
 ```
 
 ### Missing API permissions
